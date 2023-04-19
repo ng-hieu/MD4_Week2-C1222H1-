@@ -17,26 +17,30 @@ class ProductControler {
         res.render('product/create')
     }
     addProduct = (req: Request, res: Response) => {
-        this.productService.add(req.body);
+        this.productService.addPr(req.body);
         res.redirect(301, '/home/product')
     }
-    checkDeleteProduct = (req: Request, res: Response) => {
-        res.render('product/delete')
-    }
-    findIndexById(idPr: any): number {
-        let i: number = -1;
-        this.productService.getAll().forEach((value, index, array) => {
-            if (value.id === idPr) {
-                i = index;
-            }
-        })
-        return i;
-    }
-    deletePr = (req: Request, res: Response) => {
-        let idPr = +req.params.id;
-        let index = this.findIndexById(idPr)
-        this.productService.deleteById(index);
+
+    deletePr = (req: Request, res: Response) =>{
+        let id = req.params.id;
+        // console.log('checkkk')
+        // console.log(id)
+        this.productService.deleteById(id);
         res.redirect(301, '/home/product');
+    }
+    productNeedEdit = async (req: Request, res: Response) =>{
+        console.log('checkk')
+        let id = req.params.id;
+        console.log(id)
+        let productEdit = await this.productService.showProductEdit(id);
+        res.render('product/edit', {product: productEdit});
+    }
+    productAfEdit = async (req: Request, res: Response) =>{
+
+        let id = req.params.id;
+        let product = req.body;
+        await this.productService.productEdit(id, product);
+        res.redirect(301, '/home/product')
     }
 }
 

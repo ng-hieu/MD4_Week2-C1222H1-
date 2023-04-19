@@ -14,28 +14,28 @@ class ProductControler {
             res.render('product/create');
         };
         this.addProduct = (req, res) => {
-            this.productService.add(req.body);
+            this.productService.addPr(req.body);
             res.redirect(301, '/home/product');
         };
-        this.checkDeleteProduct = (req, res) => {
-            res.render('product/delete');
-        };
         this.deletePr = (req, res) => {
-            let idPr = +req.params.id;
-            let index = this.findIndexById(idPr);
-            this.productService.deleteById(index);
+            let id = req.params.id;
+            this.productService.deleteById(id);
+            res.redirect(301, '/home/product');
+        };
+        this.productNeedEdit = async (req, res) => {
+            console.log('checkk');
+            let id = req.params.id;
+            console.log(id);
+            let productEdit = await this.productService.showProductEdit(id);
+            res.render('product/edit', { product: productEdit });
+        };
+        this.productAfEdit = async (req, res) => {
+            let id = req.params.id;
+            let product = req.body;
+            await this.productService.productEdit(id, product);
             res.redirect(301, '/home/product');
         };
         this.productService = productService_1.default;
-    }
-    findIndexById(idPr) {
-        let i = -1;
-        this.productService.getAll().forEach((value, index, array) => {
-            if (value.id === idPr) {
-                i = index;
-            }
-        });
-        return i;
     }
 }
 exports.default = new ProductControler();
